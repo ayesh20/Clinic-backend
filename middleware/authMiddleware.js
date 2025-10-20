@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import Doctor from '../models/doctor.js';
 import Patient from '../models/patient.js';
+import Admin from '../models/admin.js'; // ADD THIS IMPORT
 
 export const authenticate = async (req, res, next) => {
   try {
@@ -16,11 +17,19 @@ export const authenticate = async (req, res, next) => {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // Find user (check both Doctor and Patient collections)
-    let user = await Doctor.findById(decoded.id).select('-password');
-    
-    if (!user) {
-      user = await Patient.findById(decoded.id).select('-password');
+    let user = null;
+
+    // Check if token has role specified
+    if (decoded.role === 'admin') {
+      // Look in Admin collection
+      user = await Admin.findById(decoded.id).select('-password');
+    } else {
+      // Check Doctor and Patient collections
+      user = await Doctor.findById(decoded.id).select('-password');
+      
+      if (!user) {
+        user = await Patient.findById(decoded.id).select('-password');
+      }
     }
 
     if (!user) {
@@ -28,7 +37,7 @@ export const authenticate = async (req, res, next) => {
     }
 
     // Check if user is active
-    if (!user.isActive) {
+    if (user.isActive === false) {
       return res.status(403).json({ message: 'Account is deactivated.' });
     }
 
@@ -73,6 +82,5 @@ export const isPatient = (req, res, next) => {
     return res.status(403).json({ message: 'Access denied. Patient privileges required.' });
   }
 };
-
 
 export const protect = authenticate;

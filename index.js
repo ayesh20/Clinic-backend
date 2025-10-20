@@ -7,7 +7,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import patientRouter from "./routers/patientRouter.js"
-import doctorRouter from"./routers/doctorRouter.js"
+import doctorRouter from "./routers/doctorRouter.js"
+import adminRouter from "./routers/adminRouter.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -20,8 +21,6 @@ app.use(cors());
 app.use(bodyParser.json())
 // Serve static files (uploaded images)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Remove the duplicate JWT middleware - let the route-specific middleware handle it
 
 const connectionString = process.env.MONGO_URI
 
@@ -37,9 +36,10 @@ mongoose.connect(connectionString).then(
 
 app.use("/api/patients", patientRouter);
 app.use("/api/doctors", doctorRouter);
+app.use("/api/admin", adminRouter);
 
 app.listen(5000, 
    ()=>{
-       console.log("server started")
+       console.log("server started on port 5000")
    }
 )

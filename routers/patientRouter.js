@@ -19,16 +19,16 @@ const router = express.Router();
 router.post("/register", registerPatient);
 router.post("/login", loginPatient);
 
-// Protected routes (require authentication)
-router.get("/profile", authenticate, getPatientProfile);
-router.put("/profile", authenticate, updatePatientProfile);
-router.delete("/profile", authenticate, deletePatient);
-
-// Admin routes (require authentication and admin role)
+// Admin routes (MUST come before /profile routes)
+router.get("/search/:query", authenticate, searchPatients);
 router.get("/", authenticate, getAllPatients);
 router.get("/:patientId", authenticate, getPatientById);
 router.put("/admin/:patientId", authenticate, updatePatientByAdmin);
 router.delete("/admin/:patientId", authenticate, deletePatientByAdmin);
-router.get("/search/:query", authenticate, searchPatients);
+
+// Protected routes (require authentication)
+router.get("/profile", authenticate, getPatientProfile);
+router.put("/profile", authenticate, updatePatientProfile);
+router.delete("/profile", authenticate, deletePatient);
 
 export default router;
