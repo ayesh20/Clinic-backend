@@ -10,6 +10,8 @@ import patientRouter from "./routers/patientRouter.js"
 import doctorRouter from "./routers/doctorRouter.js"
 import adminRouter from "./routers/adminRouter.js"
 import feedbackRoutes from "./routers/feedbackRoutes.js";
+import passwordRoutes from "./routers/passwordRoutes.js";
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,6 +41,8 @@ app.use("/api/patients", patientRouter);
 app.use("/api/doctors", doctorRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/feedback", feedbackRoutes);
+app.use("/api/password", passwordRoutes);
+
 
 app.listen(5000, 
    ()=>{
