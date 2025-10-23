@@ -8,6 +8,8 @@ import { fileURLToPath } from 'url';
 
 import patientRouter from "./routers/patientRouter.js"
 import doctorRouter from"./routers/doctorRouter.js"
+import contactRouter from "./routers/contactRouter.js" 
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,6 +39,16 @@ mongoose.connect(connectionString).then(
 
 app.use("/api/patients", patientRouter);
 app.use("/api/doctors", doctorRouter);
+app.use("/api/contact", contactRouter); 
+
+// Simple health route (optional)
+app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+
+// Global error handler (so controller next(err) works)
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ success: false, message: 'Server error' });
+});
 
 app.listen(5000, 
    ()=>{
