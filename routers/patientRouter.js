@@ -22,7 +22,7 @@ router.post("/login", loginPatient);
 // Admin routes (MUST come before /profile routes)
 router.get("/search/:query", authenticate, searchPatients);
 router.get("/", authenticate, getAllPatients);
-router.get("/:patientId", authenticate, getPatientById);
+// router.get("/:patientId", authenticate, getPatientById);
 router.put("/admin/:patientId", authenticate, updatePatientByAdmin);
 router.delete("/admin/:patientId", authenticate, deletePatientByAdmin);
 
@@ -30,5 +30,8 @@ router.delete("/admin/:patientId", authenticate, deletePatientByAdmin);
 router.get("/profile", authenticate, getPatientProfile);
 router.put("/profile", authenticate, updatePatientProfile);
 router.delete("/profile", authenticate, deletePatient);
+
+router.get("/:patientId", authenticate, getPatientById);
+
 
 export default router;
