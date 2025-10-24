@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  registerAdmin,
   loginAdmin,
   
 } from "../controllers/adminController.js";
@@ -8,8 +7,7 @@ import {
 
 const router = express.Router();
 
-// Public routes
-router.post("/register", registerAdmin);
+// Public route
 router.post("/login", loginAdmin);
 
 
