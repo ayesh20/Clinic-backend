@@ -10,7 +10,7 @@ const doctorSchema = new mongoose.Schema(
     },
     fullName: {
       type: String,
-      required: [true, "Last name is required"],
+      required: [true, "Full name is required"],
       trim: true,
     },
     email: {
@@ -25,7 +25,7 @@ const doctorSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters"],
-      select: false, // Don't return password by default
+      select: false,
     },
     phone: {
       type: String,
@@ -42,7 +42,6 @@ const doctorSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
-   
     birthday: {
       year: {
         type: Number,
@@ -77,14 +76,19 @@ const doctorSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 
-// Hash password before saving
+// ✅ Hash password before saving, skip if already hashed
 doctorSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  
+
+  // Skip double-hashing
+  if (this.password.startsWith("$2b$") || this.password.startsWith("$2a$")) {
+    return next();
+  }
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -94,7 +98,7 @@ doctorSchema.pre("save", async function (next) {
   }
 });
 
-// Method to compare passwords
+// Compare password
 doctorSchema.methods.comparePassword = async function (candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
@@ -103,7 +107,7 @@ doctorSchema.methods.comparePassword = async function (candidatePassword) {
   }
 };
 
-// Method to get public profile (without password)
+// Hide password from API responses
 doctorSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
@@ -111,5 +115,4 @@ doctorSchema.methods.toJSON = function () {
 };
 
 const Doctor = mongoose.model("Doctor", doctorSchema);
-
 export default Doctor;

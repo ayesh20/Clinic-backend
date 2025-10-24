@@ -100,10 +100,15 @@ const patientSchema = new mongoose.Schema(
   }
 );
 
-// Hash password before saving
+// ✅ Hash password before saving, but skip if already hashed
 patientSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  
+
+  // Skip if password already hashed
+  if (this.password.startsWith("$2b$") || this.password.startsWith("$2a$")) {
+    return next();
+  }
+
   try {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
@@ -113,7 +118,7 @@ patientSchema.pre("save", async function (next) {
   }
 });
 
-// Method to compare passwords
+// Compare passwords
 patientSchema.methods.comparePassword = async function (candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
@@ -122,7 +127,7 @@ patientSchema.methods.comparePassword = async function (candidatePassword) {
   }
 };
 
-// Method to get public profile (without password)
+// Hide password in JSON responses
 patientSchema.methods.toJSON = function () {
   const obj = this.toObject();
   delete obj.password;
@@ -130,5 +135,4 @@ patientSchema.methods.toJSON = function () {
 };
 
 const Patient = mongoose.model("Patient", patientSchema);
-
 export default Patient;

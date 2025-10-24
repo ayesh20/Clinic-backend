@@ -7,7 +7,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import patientRouter from "./routers/patientRouter.js"
-import doctorRouter from"./routers/doctorRouter.js"
 import contactRouter from "./routers/contactRouter.js" 
 import doctorRouter from "./routers/doctorRouter.js"
 import adminRouter from "./routers/adminRouter.js"
@@ -53,7 +52,6 @@ app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ success: false, message: 'Server error' });
 });
-=======
 app.use("/api/admin", adminRouter);
 app.use("/api/feedback", feedbackRoutes);
 app.use("/api/password", passwordRoutes);
