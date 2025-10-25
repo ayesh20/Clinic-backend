@@ -14,6 +14,7 @@ import feedbackRoutes from "./routers/feedbackRoutes.js";
 import passwordRoutes from "./routers/passwordRoutes.js";
 import availabilityRoutes from "./routers/availabilityRoutes.js";
 import appointmentRoutes from "./routers/appointmentRoutes.js"; 
+import appointmentViewRoutes from "./routers/appointmentViewRoutes.js";
 
 
 const __filename = fileURLToPath(import.meta.url);
